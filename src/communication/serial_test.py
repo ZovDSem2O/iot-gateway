@@ -1,46 +1,115 @@
 import serial
 import time
 
-def test_serial_port(port, baudrate=9600, timeout=1):
-    """测试串口通信"""
-    try:
-        # 打开串口
-        ser = serial.Serial(
-            port=port,
-            baudrate=baudrate,
-            parity=serial.PARITY_NONE,
-            stopbits=serial.STOPBITS_ONE,
-            bytesize=serial.EIGHTBITS,
-            timeout=timeout
-        )
-        print(f"成功打开串口: {port}")
-        
-        # 测试发送数据
-        test_data = b"Hello, Serial!\r\n"
-        ser.write(test_data)
-        print(f"发送数据: {test_data}")
-        
-        # 等待接收数据
-        time.sleep(0.5)
-        if ser.in_waiting > 0:
-            received_data = ser.read(ser.in_waiting)
-            print(f"接收到数据: {received_data}")
-        else:
-            print("未接收到数据")
-        
-        # 关闭串口
-        ser.close()
-        print("串口测试完成")
+class SerialPort:
+    ##############   串口通信类
+
+    def __init__(self, port, baudrate=9600, timeout=1) -> None:
+        """
+        初始化串口
+        :param port: 串口设备路径
+        :param baudrate: 波特率
+        :param timeout: 超时时间
+        """
+
+        self.port = port
+        self.baudrate = baudrate
+        self.timeout = timeout
+        self.ser = None
+
+    def open(self):
+        """打开串口"""
+        try:
+            self.ser = serial.Serial(
+                port=self.port,
+                baudrate=self.baudrate,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE,
+                bytesize=serial.EIGHTBITS,
+                timeout=self.timeout
+            )
+            print(f"成功打开串口: {self.port}")
+        except Exception as e:
+            print(f"串口打开失败: {e}")
+            return False
         return True
-    except Exception as e:
-        print(f"串口测试失败: {e}")
-        return False
+
+    def close(self):
+            """关闭串口"""
+            if self.ser:
+                self.ser.close()
+                print(f"成功关闭串口: {self.port}")
+            else:
+                print("串口未打开")
+
+    def write(self, data):
+        """
+        发送数据
+        :param data: 要发送的数据（字节）
+        :return: 发送的字节数
+        """
+
+        if self.ser:
+            self.ser.write(data)
+            print(f"成功写入数据: {data}")
+        else:
+            print("串口未打开")
+       
+    def read(self):
+        """
+        读取数据
+        :param size: 要读取的字节数
+        :return: 读取的数据（字节）
+        """
+        if self.ser:
+            data = self.ser.readline().decode().strip()
+            print(f"成功读取数据: {data}")
+            return data
+        else:
+            print("串口未打开")
+            return None
+        
+    def read_all(self):
+        """
+        读取所有可用数据
+        :return: 读取的数据（字节）
+        """
+        if self.ser:
+            data = self.ser.read().decode().strip()
+            print(f"成功读取所有数据: {data}")
+            return data
+        else:
+            print("串口未打开")
+            return None
+
+    def in_waiting(self):
+        """
+        获取接收缓冲区中的字节数
+        :return: 字节数
+        """
+        if not self.ser or not self.ser.is_open:
+            return 0
+
+        try:
+            return self.ser.in_waiting
+
+        except Exception as e:
+            print(f"获取缓冲区数据失败: {e}")
+            return 0
 
 if __name__ == "__main__":
-    # 测试RS232串口（假设为/dev/ttyS3）
-    print("测试RS232串口...")
-    test_serial_port("/dev/ttyS3")
-    
-    # 测试RS485串口（假设为/dev/ttyUSB0）
-    print("\n测试RS485串口...")
-    test_serial_port("/dev/ttyUSB0")
+    # 创建串口实例
+    serial_port = SerialPort('/dev/ttyS4', baudrate=9600, timeout=1)
+
+    # 打开串口
+    if serial_port.open():
+        # 发送数据
+        serial_port.write(b"Hello, World!\n")
+        # 读取数据
+        data = serial_port.read()
+        if data:
+            print(f"收到数据: {data}")
+        # 关闭串口
+        serial_port.close()
+    else:
+        print("串口打开失败")
