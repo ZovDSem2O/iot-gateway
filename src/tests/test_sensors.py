@@ -1,5 +1,11 @@
 import unittest
-from communication.sensors.temperature_humidity import TemperatureHumiditySensor
+import sys
+import os
+
+# 添加 src 目录到 Python 路径
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from sensors.temperature_humidity import TemperatureHumiditySensor
 
 class TestTemperatureHumiditySensor(unittest.TestCase):
     """测试温湿度传感器"""
@@ -19,5 +25,5 @@ class TestTemperatureHumiditySensor(unittest.TestCase):
         else:
             print("连接失败，跳过测试")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

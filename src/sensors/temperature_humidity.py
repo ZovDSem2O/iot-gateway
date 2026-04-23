@@ -1,4 +1,4 @@
-from ..modbus import ModbusManager
+from communication.modbus import ModbusManager
 
 class TemperatureHumiditySensor:
     """温湿度传感器类"""
