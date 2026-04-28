@@ -1,13 +1,14 @@
 # 工业级边缘网关项目
 
-基于RK3568开发板的工业级边缘网关，支持Modbus RTU/TCP协议，实现工业设备数据采集、本地处理、Web监控、云端上报和智能告警功能。
+基于RK3568开发板的工业级边缘网关，支持Modbus RTU/TCP协议和ZigBee无线通信，实现工业设备数据采集、本地处理、Web监控、云端上报和智能告警功能。
 
 ## 项目结构
 ├── src/               # 源代码目录
-│   ├── communication/  # 通信模块（Modbus RTU/TCP）
-│   ├── edge_ai/        # 边缘智能模块
-│   ├── cloud/          # 云端协同模块
-│   ├── frontend/       # 前端界面
+│   ├── communication/  # 通信模块（Modbus RTU/TCP、ZigBee）
+│   │   ├── zigbee/     # ZigBee通信模块
+│   ├── sensors/        # 传感器模块
+│   ├── database/       # 数据库模块
+│   ├── web/            # Web监控界面
 │   └── utils/          # 工具函数
 ├── docs/              # 文档目录
 ├── scripts/           # 脚本目录
@@ -21,6 +22,7 @@
 1. **工业设备数据采集**
    - 通过 Modbus RTU 协议采集温湿度传感器数据
    - 通过 Modbus TCP 协议采集以太网设备数据
+   - 通过 ZigBee 协议采集无线传感器数据
    - 支持多设备同时轮询采集
    - 实时数据读取，毫秒级响应
 
@@ -51,9 +53,9 @@
 
 ## 技术栈
 
-- **硬件**：RK3568开发板、RS485/RS232模块、工业传感器
+- **硬件**：RK3568开发板、RS485/RS232模块、ZigBee协调器、工业传感器
 - **操作系统**：Ubuntu 20.04 LTS
-- **通信协议**：pymodbus（Modbus RTU/TCP）、pyserial（串口通信）
+- **通信协议**：pymodbus（Modbus RTU/TCP）、pyserial（串口通信）、ZigBee协议
 - **后端**：Python FastAPI（API服务）、SQLite（数据存储）
 - **前端**：Vue 3 + ECharts（数据可视化）
 - **云服务**：华为云 IoT 平台
@@ -65,3 +67,4 @@
 2. 安装必要依赖：
    ```bash
    pip install -r requirements.txt
+   ```
