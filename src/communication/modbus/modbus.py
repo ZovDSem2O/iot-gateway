@@ -1,6 +1,8 @@
 from _typeshed import Self
 from pymodbus.client import ModbusSerialClient, ModbusTcpClient
 from pymodbus.exceptions import ModbusException
+from .modbus import ModbusManager
+from communication.modbus import ModbusManager
 import time
 
 class ModbusManager:
