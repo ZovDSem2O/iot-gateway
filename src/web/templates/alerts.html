@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>告警信息</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .nav { margin-bottom: 20px; }
+        .nav a { margin-right: 20px; font-size: 18px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .alert { color: red; }
+        .refresh { margin-bottom: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">首页</a>
+        <a href="/sensors">传感器数据</a>
+        <a href="/alerts">告警信息</a>
+    </div>
+    
+    <h1>告警信息</h1>
+    <button class="refresh" onclick="loadAlerts()">刷新告警</button>
+    
+    <table id="alertTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>设备类型</th>
+                <th>设备ID</th>
+                <th>告警类型</th>
+                <th>告警信息</th>
+                <th>温度(°C)</th>
+                <th>湿度(%)</th>
+                <th>告警时间</th>
+            </tr>
+        </thead>
+        <tbody id="alertBody">
+        </tbody>
+    </table>
+
+    <script>
+        function loadAlerts() {
+            fetch('/api/alerts')
+                .then(response => response.json())
+                .then(data => {
+                    let html = '';
+                    data.forEach(row => {
+                        html += '<tr class="alert">';
+                        html += `<td>${row.id}</td>`;
+                        html += `<td>${row.device_type}</td>`;
+                        html += `<td>${row.device_id}</td>`;
+                        html += `<td>${row.alert_type}</td>`;
+                        html += `<td>${row.alert_message}</td>`;
+                        html += `<td>${row.temperature}</td>`;
+                        html += `<td>${row.humidity}</td>`;
+                        html += `<td>${row.created_at}</td>`;
+                        html += '</tr>';
+                    });
+                    document.getElementById('alertBody').innerHTML = html;
+                });
+        }
+        
+        loadAlerts();
+        setInterval(loadAlerts, 5000);
+    </script>
+</body>
+</html>
