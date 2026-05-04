@@ -9,7 +9,7 @@ try:
     
     print("\nCreating MQTT client...")
     client = MQTTClient(
-        broker="test.mosquitto.org",
+        broker="broker.emqx.io",
         port=1883,
         username="",
         password="",
